@@ -7,11 +7,14 @@ public class Bank {
     private float balance = 1000;
 
     public boolean cardIsLocked(String id) {
+        if (unlockAttempts >= 3) {
+            return true;
+        }
         return false;
     }
 
     public boolean validPin(String id, String pin) {
-        if (pin == correctPin) {
+        if (pin.equals(correctPin)) {
             return true;
         }
         unlockAttempts++;

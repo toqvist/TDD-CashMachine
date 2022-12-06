@@ -3,29 +3,34 @@
  */
 package cashmachine;
 
+import java.util.EventObject;
 import java.util.Scanner;
 
 public class CashMachine {
 
     public static void main(String[] args) {
         Hardware hw = new Hardware();
-        CashMachine cm = new CashMachine();
         Bank bank = new Bank();
 
         boolean unlocked = false;
         boolean depositing = false;
         boolean withdrawing = false;
-        boolean ejecting = false;
 
         Scanner scanner = new Scanner(System.in);
 
         while (hw.cardIsInserted()) {
             
             if (!unlocked) {
-                System.out.println("Welcome to " + getMachineOwner() + "!");
-                System.out.println("Enter PIN: ");
-                String pin = scanner.next();
-                unlocked = bank.validPin(hw.getCardID(), pin);
+                
+                if (!bank.cardIsLocked(hw.getCardID())) {
+                    System.out.println("Welcome to " + getMachineOwner() + "!");
+                    System.out.println("Enter PIN: ");
+                    String pin = scanner.next();
+                    unlocked = bank.validPin(hw.getCardID(), pin);
+                } else {
+                    System.out.println("Card is locked.");
+                    hw.ejectCard();
+                }
             }
 
             if (unlocked) {
@@ -63,10 +68,10 @@ public class CashMachine {
                         System.out.println("Balance: " + bank.getBalance());
                         break;
                     case "2":
-                        depositing = true;
+                        withdrawing = true;
                         break;
                     case "3":
-                        withdrawing = true;
+                        depositing = true;
                         break;
                     case "4":
                         hw.ejectCard();
