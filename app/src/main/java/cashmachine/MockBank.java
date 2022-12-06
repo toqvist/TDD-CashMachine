@@ -1,6 +1,6 @@
 package cashmachine;
 
-public class Bank {
+public class MockBank {
 
     private int unlockAttempts = 0;
     private String correctPin = "0000";
@@ -14,10 +14,14 @@ public class Bank {
     }
 
     public boolean validPin(String id, String pin) {
+        if (cardIsLocked(id)) {
+            return false;
+        }
+        
+        unlockAttempts++;
         if (pin.equals(correctPin)) {
             return true;
         }
-        unlockAttempts++;
         return false;
     }
 
@@ -38,12 +42,21 @@ public class Bank {
         return "Bank of Sweden";
     }
 
-    public void deposit (int amount) {
-        balance += amount;
+    public float deposit (int amount) {
+        this.balance += amount;
+        return this.balance;
     }
 
-    public void withdraw (int amount) {
-        balance -= amount;
+    public float withdraw (int amount) {
+        if ( amount > this.balance) {
+            return this.balance;
+        }
+        this.balance -= amount;
+        return this.balance;
+    }
+    
+    public void setBalance(float newBalance) {
+        this.balance = newBalance;
     }
 
 

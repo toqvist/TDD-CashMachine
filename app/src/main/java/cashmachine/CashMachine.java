@@ -9,8 +9,8 @@ import java.util.Scanner;
 public class CashMachine {
 
     public static void main(String[] args) {
-        Hardware hw = new Hardware();
-        Bank bank = new Bank();
+        MockHardware hw = new MockHardware();
+        MockBank bank = new MockBank();
 
         boolean unlocked = false;
         boolean depositing = false;
@@ -41,6 +41,7 @@ public class CashMachine {
 
                     if (hw.receivedMoney(amount)) {
                         bank.deposit(amount);
+                        System.out.println(amount + " deposited");
                     }
                     depositing = false;
                 }
@@ -52,6 +53,9 @@ public class CashMachine {
                     if (amount <= bank.getBalance()) {
                         bank.withdraw(amount);
                         hw.dispenseMoney(amount);
+                        System.out.println(amount + " withdrawn");
+                    } else {
+                        System.out.println("Not high enough balance");
                     }
                     
                     withdrawing = false;
@@ -86,7 +90,7 @@ public class CashMachine {
     }
 
     private static String getMachineOwner () {
-        return Bank.getName();
+        return MockBank.getName();
     }
 }
 

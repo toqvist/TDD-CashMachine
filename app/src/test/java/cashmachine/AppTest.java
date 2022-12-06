@@ -14,62 +14,81 @@ import static org.mockito.Mockito.*;
 class AppTest {
 
     CashMachine cm;
-    Hardware hw;
-    Bank bank;
+    MockHardware hw;
+    MockBank bank;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp () {
         cm = new CashMachine();
-        hw = mock(Hardware.class);
-        bank = mock(Bank.class);
+        hw = mock(MockHardware.class);
+        bank = mock(MockBank.class);
+
+        when(bank.getBalance()).thenReturn(100f);
+        
     }
-    //Cash machine can
-    // Checks with bank if card is locked
-    @Test void machineCanCheckIfCardLocked () {
-        
-       when(hw.getCardID()).thenReturn("123451234");
 
-        
+    // Login user using ID + PIN
+    @Test void bankCanLoginUser () {
+        bank = new MockBank();
+        assertTrue(bank.validPin(hw.getCardID(), "0000"));
 
-       //when(bank.validateCard(hw.getCardID(), "1234").thenReturn(true));
+        bank.setCorrectPin("1234");
+        assertTrue(bank.validPin(hw.getCardID(), "1234"));
+    }
 
-        
+
+    // Bank should lock card if too many attempts have been made
+    // Locked card should deny unlocks even with valid pin
+    @Test void bankCanLockCard () {
+        bank = new MockBank();
+
+        assertFalse(bank.validPin(hw.getCardID(), "9999"));
+        assertFalse(bank.validPin(hw.getCardID(), "9998"));
+        assertFalse(bank.validPin(hw.getCardID(), "9997"));
+
+        assertTrue(bank.cardIsLocked(hw.getCardID()));
+        assertFalse(bank.validPin(hw.getCardID(), "0000"));
     }
 
     // Can check balance from bank account
+    @Test void bankCanReturnBalance () {
+        bank = new MockBank();
+        assertEquals(1000, bank.getBalance());
+    }
 
     // Can withdraw money
-
     // Verify that withdraw function on bank is run
+    @Test void bankCanWithdrawMoney () {
+        when(bank.withdraw(50)).thenReturn((float) 50); 
+        bank.withdraw(50);
+        verify(bank).withdraw(50);
+
+        bank = new MockBank();
+        bank.setBalance(100);
+        bank.withdraw(50);
+        assertEquals(bank.getBalance(), 50);   
+    }
+
     // Can deposit money
-
     // Verify that deposit function on bank is run
-    // Can exit process
+    @Test void bankCanDepositwMoney () {
+        when(bank.deposit(50)).thenReturn((float) 150); 
+        bank.deposit(50);
+        verify(bank).deposit(50);
 
-    // Machine verifies which bank it's connected to
+        bank = new MockBank();
+        bank.setBalance(100);
+        bank.deposit(50);
+        assertEquals(bank.getBalance(), 150);   
+    }
 
-    
-    //Mock bank machine hardware API
-        //Mock the card-reader
-            // Get and ID from the card reader, identifying user
-            // Mock card-inserted sensor
-    
-        //Use terminal as pin-pad
+    @Test void bankDeniesIfWithdrawalTooHigh () {
+        bank = new MockBank();
+        float before = bank.getBalance();
+        bank.withdraw(50000);
+        float after = bank.getBalance();
+        assertEquals(before, after);
 
-        // Cash handler
-            // Take money
-            // Withdraw money
-
-    
-    //Mock the bank backend
-        // Login user using ID + PIN
-        // Track login attempts
-        // Login attempts >= 3 locks the card 
-        // Bank can give successful attempts left
-        // Successful login returns authentication token
-        // Auth-token verification is mocked
-        // Can get bank account balance
-        // Check if enough money in account, authourize withdrawal, decrement
-
+    }
     
 }

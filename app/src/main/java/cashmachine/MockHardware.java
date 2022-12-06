@@ -1,6 +1,6 @@
 package cashmachine;
 
-public class Hardware {
+public class MockHardware {
     boolean cardIsInserted = true;
 
     public boolean cardIsInserted () {
@@ -33,6 +33,7 @@ public class Hardware {
         boolean waitForMoney = true;
         while (waitForMoney) {
             if (countInsertedAmount(amount) == amount) {
+                System.out.println("ZZRrrRrRrrrR!");
                 closeBanknoteTray();
                 waitForMoney = false;
                 return true;
