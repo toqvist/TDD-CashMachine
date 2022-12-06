@@ -1,9 +1,15 @@
 package cashmachine;
 
 public class Hardware {
+    boolean cardIsInserted = true;
+
     public boolean cardIsInserted () {
-        return true;
+        return this.cardIsInserted;
     }    
+
+    public void ejectCard () {
+        this.cardIsInserted = false;
+    }
 
     public String getCardID () {
         if (cardIsInserted()) {

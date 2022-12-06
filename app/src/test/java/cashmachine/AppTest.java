@@ -27,9 +27,9 @@ class AppTest {
     // Checks with bank if card is locked
     @Test void machineCanCheckIfCardLocked () {
         
-        when(hw.getCardID()).thenReturn("123451234");
+       when(hw.getCardID()).thenReturn("123451234");
 
-       // when(bank.validateCard(hw.getCardID(), "1234").thenReturn(true));
+       //when(bank.validateCard(hw.getCardID(), "1234").thenReturn(true));
 
         
     }
